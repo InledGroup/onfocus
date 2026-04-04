@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a OnFocus</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="wizard-wrapper">
+    <div class="wizard-container">
+      <!-- Step 1: Welcome -->
+      <div class="step active" id="step-1">
+        <div class="lang-selector-top">
+          <select id="lang-select">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="icon-header">
+          <img src="/icons/onfocus-logo.png" alt="OnFocus Logo" class="main-logo">
+        </div>
+        <h1>Bienvenido a <span class="highlight">OnFocus</span></h1>
+        <p>Tu nuevo espacio digital libre de distracciones. Vamos a configurar tu entorno ideal en menos de un minuto.</p>
+        <div class="action-area">
+          <button class="btn btn-primary btn-large" id="btn-start">Comenzar ahora</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Time Config -->
+      <div class="step" id="step-2">
+        <div class="step-indicator">Paso 1 de 2</div>
+        <h2>Define tus ciclos</h2>
+        <p>Configura cuánto tiempo quieres mantener el enfoque profundo.</p>
+        
+        <div class="config-grid">
+          <div class="config-card">
+            <div class="card-icon">📚</div>
+            <label for="study-time">Estudio</label>
+            <div class="input-wrapper">
+              <input type="number" id="study-time" value="25" min="1">
+              <span>min</span>
+            </div>
+          </div>
+          <div class="config-card">
+            <div class="card-icon">☕</div>
+            <label for="pomodoro-time">Descanso</label>
+            <div class="input-wrapper">
+              <input type="number" id="pomodoro-time" value="5" min="1">
+              <span>min</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem; text-align: center;">
+          <label for="total-cycles" style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); font-weight: 700;">Número de ciclos (Repeticiones)</label>
+          <input type="number" id="total-cycles" value="1" min="1" style="width: 80px; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #cbd5e1; text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--primary);">
+        </div>
+
+        <div class="action-area space-between">
+          <button class="btn btn-ghost" id="btn-back-1">Atrás</button>
+          <button class="btn btn-primary" id="btn-next-2">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Sites -->
+      <div class="step" id="step-3">
+        <div class="step-indicator">Paso 2 de 2</div>
+        <h2>Páginas Restringidas</h2>
+        <p>¿Qué webs suelen robarte la atención? Añádelas aquí.</p>
+        
+        <div class="add-site-form">
+          <div class="input-group">
+            <input type="text" id="site-url" placeholder="facebook.com, youtube.com...">
+            <select id="site-type">
+              <option value="block">Bloquear</option>
+              <option value="countdown">Temporizar</option>
+            </select>
+          </div>
+          <button id="add-site" class="btn btn-secondary">Añadir a la lista</button>
+        </div>
+
+        <div class="site-list-container">
+          <ul id="site-list"></ul>
+        </div>
+
+        <div class="action-area space-between">
+          <button class="btn btn-ghost" id="btn-back-2">Atrás</button>
+          <button id="finish-wizard" class="btn btn-primary btn-glow">Finalizar configuración</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración - OnFocus</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="/icons/onfocus-logo.png" alt="OnFocus Logo" class="header-logo">
+      <h1>Configuración de OnFocus</h1>
+      <p>Personaliza tu experiencia de concentración.</p>
+    </header>
+
+    <section class="config-section">
+      <h2>Idioma / Language</h2>
+      <div class="form-group">
+        <select id="lang-select">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="config-section">
+      <h2>Tiempos de Enfoque</h2>
+      <div class="form-group">
+        <label for="study-mins">Tiempo de Estudio (minutos):</label>
+        <input type="number" id="study-mins" value="25" min="1">
+      </div>
+      <div class="form-group">
+        <label for="pomodoro-mins">Tiempo de Pomodoro (minutos):</label>
+        <input type="number" id="pomodoro-mins" value="5" min="1">
+      </div>
+      <div class="form-group">
+        <label for="total-cycles">Número de Repeticiones (Ciclos):</label>
+        <input type="number" id="total-cycles" value="1" min="1">
+      </div>
+      <div class="form-group checkbox-group">
+        <input type="checkbox" id="enable-pomodoro" checked>
+        <label for="enable-pomodoro">Activar Pomodoro automáticamente al iniciar enfoque</label>
+      </div>
+      <button id="save-config" class="btn btn-primary">Guardar Configuración</button>
+    </section>
+
+    <section class="config-section">
+      <h2>Páginas Restringidas</h2>
+      <div class="input-row">
+        <input type="text" id="add-url" placeholder="ejemplo.com">
+        <select id="block-type">
+          <option value="block">Bloquear</option>
+          <option value="countdown">Temporizar</option>
+        </select>
+        <button id="add-btn" class="btn btn-primary">Añadir</button>
+      </div>
+      <div id="blacklist-container" class="list-container">
+        <!-- Lista de sitios cargada dinámicamente -->
+      </div>
+    </section>
+
+    <section class="config-section">
+      <h2>Alertas de Tiempo Limite</h2>
+      <div class="input-row">
+        <input type="text" id="alert-url" placeholder="ejemplo.com">
+        <input type="number" id="alert-mins" placeholder="min" min="1">
+        <button id="add-alert-btn" class="btn btn-primary">Añadir Alerta</button>
+      </div>
+      <div id="alerts-container" class="list-container">
+        <!-- Alertas cargadas dinámicamente -->
+      </div>
+    </section>
+
+    <section class="config-section">
+      <h2>Depuración y Pruebas</h2>
+      <p>Utiliza este botón para verificar que las notificaciones visuales y sonoras funcionan correctamente en tu navegador.</p>
+      <button id="test-notify" class="btn btn-secondary">Probar Notificación de Sistema</button>
+    </section>
+
+    <section class="config-section">
+      <h2>Estadísticas de Hoy</h2>
+      <div id="stats-container">
+        <!-- Estadísticas cargadas dinámicamente -->
+      </div>
+    </section>
+  </div>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

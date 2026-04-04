@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sitio Bloqueado - OnFocus</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --bg: #0f172a;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+    }
+    body {
+      background-color: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+      color: var(--text);
+      text-align: center;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(30, 41, 59, 0.5);
+      padding: 60px;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      animation: fadeIn 0.8s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .icon-wrapper {
+      width: 100px;
+      height: 100px;
+      background: var(--primary);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 0 30px rgba(37, 99, 235, 0.4);
+    }
+    h1 { font-size: 3.5rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.05em; }
+    p { font-size: 1.25rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 2rem; }
+    .btn {
+      padding: 16px 32px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
+    }
+    .logo-img {
+      width: 60px;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon-wrapper">
+      <img src="/icons/onfocus-logo.png" alt="OnFocus" class="logo-img">
+    </div>
+    <h1 id="title">Respira profundo.</h1>
+    <p id="desc">Has decidido que este sitio no es prioritario ahora mismo. Tu concentración es tu superpoder más valioso.</p>
+    <button id="btn-back" class="btn">Volver a lo importante</button>
+  </div>
+  <script type="module">
+    import { getTranslation } from '../common/i18n';
+    
+    async function init() {
+      const data = await chrome.storage.local.get('concentration_state');
+      const lang = data?.concentration_state?.config?.language || 'es';
+      
+      document.getElementById('title').innerText = getTranslation(lang, 'block_breathe');
+      document.getElementById('desc').innerText = getTranslation(lang, 'block_desc');
+      document.getElementById('btn-back').innerText = getTranslation(lang, 'block_btn');
+    }
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'https://www.google.com';
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

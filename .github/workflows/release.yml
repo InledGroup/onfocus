@@ -1,0 +1,55 @@
+name: Release Extension
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-release:
+    # Solo se ejecuta si el mensaje del commit contiene [BUILD]
+    if: contains(github.event.head_commit.message, '[BUILD]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Zip extension
+        run: |
+          cd dist
+          zip -r ../onfocus-extension.zip .
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: OnFocus Release v${{ github.run_number }}
+          body: |
+            Nueva compilación automática de OnFocus.
+            
+            **Instrucciones de instalación:**
+            1. Descarga `onfocus-extension.zip`.
+            2. Descomprímelo en una carpeta.
+            3. Ve a `chrome://extensions` en tu navegador.
+            4. Activa el "Modo de desarrollador" (esquina superior derecha).
+            5. Haz clic en "Cargar descomprimida" y selecciona la carpeta donde extrajiste el contenido.
+          files: onfocus-extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

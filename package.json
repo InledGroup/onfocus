@@ -1,0 +1,22 @@
+{
+  "name": "onfocus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.4.0",
+    "@types/chrome": "^0.1.39",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vite-plugin-web-extension": "^4.5.0"
+  }
+}

@@ -1,0 +1,160 @@
+export type Language = 'es' | 'en';
+
+export const translations = {
+  es: {
+    // Popup
+    concentrate: 'Concentrarse',
+    studying: 'Estudiando',
+    resting: 'Descanso',
+    focused: 'Enfocado',
+    mode_free: 'Modo: Libre',
+    mode_study: 'Modo: Tiempo de Estudio',
+    mode_relax: 'Modo: Tiempo de Relax',
+    mode_active: 'Modo: Concentración Activa',
+    
+    // Notifications
+    notif_break_title: '¡Tiempo de descanso!',
+    notif_break_msg: 'Has completado una sesión de trabajo. ¡Relájate!',
+    notif_study_title: '¡A trabajar!',
+    notif_study_msg: 'Comienza el ciclo {current} de {total}.',
+    notif_finish_title: '¡Misión Cumplida!',
+    notif_finish_msg: 'Has completado tus {total} ciclos de estudio. ¡Buen trabajo!',
+    notif_limit_title: '¡Límite alcanzado!',
+    notif_limit_msg: 'Llevas más de {min} minutos hoy en {url}. ¡Haz un descanso!',
+    
+    // Wizard
+    wiz_welcome: 'Bienvenido a OnFocus',
+    wiz_tagline: 'Tu nuevo espacio digital libre de distracciones. Vamos a configurar tu entorno ideal en menos de un minuto.',
+    wiz_start: 'Comenzar ahora',
+    wiz_step: 'Paso {current} de {total}',
+    wiz_cycles_title: 'Define tus ciclos',
+    wiz_cycles_desc: 'Configura cuánto tiempo quieres mantener el enfoque profundo.',
+    wiz_study: 'Estudio',
+    wiz_break: 'Descanso',
+    wiz_repetitions: 'Número de ciclos (Repeticiones)',
+    wiz_sites_title: 'Páginas Restringidas',
+    wiz_sites_desc: '¿Qué webs suelen robarte la atención? Añádelas aquí.',
+    wiz_add_list: 'Añadir a la lista',
+    wiz_finish: 'Finalizar configuración',
+    wiz_ready: '¡Todo listo!',
+    wiz_block_total: 'Bloqueo total',
+    wiz_block_grace: '30s de gracia',
+    wiz_back: 'Atrás',
+    wiz_next: 'Siguiente',
+    
+    // Options
+    opt_title: 'Configuración de OnFocus',
+    opt_subtitle: 'Personaliza tu experiencia de concentración.',
+    opt_time_section: 'Tiempos de Enfoque',
+    opt_study_time: 'Tiempo de Estudio (minutos):',
+    opt_break_time: 'Tiempo de Pomodoro (minutos):',
+    opt_reps: 'Número de Repeticiones (Ciclos):',
+    opt_auto_pom: 'Activar Pomodoro automáticamente al iniciar enfoque',
+    opt_save: 'Guardar Configuración',
+    opt_sites_section: 'Páginas Restringidas',
+    opt_add: 'Añadir',
+    opt_alerts_section: 'Alertas de Tiempo Limite',
+    opt_alert_min: 'min',
+    opt_add_alert: 'Añadir Alerta',
+    opt_debug_section: 'Depuración y Pruebas',
+    opt_debug_desc: 'Utiliza este botón para verificar que las notificaciones visuales y sonoras funcionan correctamente en tu navegador.',
+    opt_test_notif: 'Probar Notificación de Sistema',
+    opt_stats_section: 'Estadísticas de Hoy',
+    opt_no_stats: 'Aún no hay datos de hoy.',
+    opt_total_today: 'Total hoy: {min} minutos',
+    opt_lang: 'Idioma / Language',
+    opt_saved_ok: 'Configuración guardada correctamente.',
+    
+    // Blocked page
+    block_breathe: 'Respira profundo.',
+    block_desc: 'Has decidido que este sitio no es prioritario ahora mismo. Tu concentración es tu superpoder más valioso.',
+    block_btn: 'Volver a lo importante',
+    
+    // Overlay
+    over_title: 'Momento de Concentración',
+    over_desc: 'Inhala, exhala... esta página está en tu lista de distracciones.'
+  },
+  en: {
+    // Popup
+    concentrate: 'Concentrate',
+    studying: 'Studying',
+    resting: 'Break',
+    focused: 'Focused',
+    mode_free: 'Mode: Free',
+    mode_study: 'Mode: Study Time',
+    mode_relax: 'Mode: Relax Time',
+    mode_active: 'Mode: Active Concentration',
+    
+    // Notifications
+    notif_break_title: 'Break Time!',
+    notif_break_msg: 'You have completed a work session. Relax!',
+    notif_study_title: 'Back to work!',
+    notif_study_msg: 'Starting cycle {current} of {total}.',
+    notif_finish_title: 'Mission Accomplished!',
+    notif_finish_msg: 'You have completed your {total} study cycles. Good job!',
+    notif_limit_title: 'Limit reached!',
+    notif_limit_msg: 'You have spent more than {min} minutes today on {url}. Take a break!',
+    
+    // Wizard
+    wiz_welcome: 'Welcome to OnFocus',
+    wiz_tagline: 'Your new distraction-free digital space. Let\'s set up your ideal environment in less than a minute.',
+    wiz_start: 'Start now',
+    wiz_step: 'Step {current} of {total}',
+    wiz_cycles_title: 'Define your cycles',
+    wiz_cycles_desc: 'Set how long you want to maintain deep focus.',
+    wiz_study: 'Study',
+    wiz_break: 'Break',
+    wiz_repetitions: 'Number of cycles (Repetitions)',
+    wiz_sites_title: 'Restricted Pages',
+    wiz_sites_desc: 'Which websites usually steal your attention? Add them here.',
+    wiz_add_list: 'Add to list',
+    wiz_finish: 'Finish setup',
+    wiz_ready: 'All set!',
+    wiz_block_total: 'Total block',
+    wiz_block_grace: '30s grace period',
+    wiz_back: 'Back',
+    wiz_next: 'Next',
+    
+    // Options
+    opt_title: 'OnFocus Settings',
+    opt_subtitle: 'Customize your concentration experience.',
+    opt_time_section: 'Focus Times',
+    opt_study_time: 'Study Time (minutes):',
+    opt_break_time: 'Pomodoro Time (minutes):',
+    opt_reps: 'Number of Repetitions (Cycles):',
+    opt_auto_pom: 'Activate Pomodoro automatically when starting focus',
+    opt_save: 'Save Settings',
+    opt_sites_section: 'Restricted Pages',
+    opt_add: 'Add',
+    opt_alerts_section: 'Time Limit Alerts',
+    opt_alert_min: 'min',
+    opt_add_alert: 'Add Alert',
+    opt_debug_section: 'Debug and Tests',
+    opt_debug_desc: 'Use this button to verify that visual and sound notifications work correctly in your browser.',
+    opt_test_notif: 'Test System Notification',
+    opt_stats_section: 'Today\'s Statistics',
+    opt_no_stats: 'No data for today yet.',
+    opt_total_today: 'Total today: {min} minutes',
+    opt_lang: 'Language / Idioma',
+    opt_saved_ok: 'Settings saved successfully.',
+    
+    // Blocked page
+    block_breathe: 'Breathe deeply.',
+    block_desc: 'You have decided that this site is not a priority right now. Your concentration is your most valuable superpower.',
+    block_btn: 'Back to what matters',
+    
+    // Overlay
+    over_title: 'Focus Moment',
+    over_desc: 'Inhale, exhale... this page is on your distraction list.'
+  }
+};
+
+export type TranslationKey = keyof typeof translations['es'];
+
+export function getTranslation(lang: Language, key: TranslationKey, params: Record<string, any> = {}) {
+  let text = (translations[lang] as any)[key] || (translations['es'] as any)[key] || key;
+  Object.keys(params).forEach(param => {
+    text = text.replace(`{${param}}`, params[param]);
+  });
+  return text;
+}

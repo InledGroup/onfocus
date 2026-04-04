@@ -1,0 +1,158 @@
+:root {
+  --primary-color: #2563eb; /* Azul base */
+  --primary-strong: #1e40af; /* Azul potente */
+  --bg-color: #ffffff;
+  --text-color: #1f2937;
+  --circle-size: 160px;
+}
+
+body {
+  width: 280px;
+  height: 380px;
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon-btn {
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: var(--primary-strong);
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#main-button-container {
+  position: relative;
+}
+
+.circle-btn {
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: visible;
+}
+
+.progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+  transform-origin: 50% 50%;
+}
+
+.circle-btn:hover {
+  transform: scale(1.05);
+  background-color: var(--primary-strong);
+}
+
+.inner-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  z-index: 10;
+}
+
+.button-logo {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+#status-text {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+#timer-display {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+footer {
+  padding: 1rem;
+  text-align: center;
+}
+
+#mode-indicator {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Estado Activo (Concentración) */
+body.active-mode {
+  background-color: #0f172a; /* Fondo muy oscuro */
+  color: #f8fafc;
+}
+
+body.active-mode .circle-btn {
+  background-color: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+}
+
+/* Estado Descanso (Pomodoro Break) */
+body.break-mode .circle-btn {
+  background-color: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+body.break-mode #progress-bar {
+  stroke: #10b981; /* Verde */
+}
+
+body.break-mode #mode-indicator {
+  color: #10b981;
+}
+
+body.active-mode #mode-indicator {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
