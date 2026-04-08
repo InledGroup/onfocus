@@ -3,6 +3,7 @@ import { SiteConfig, BlockType, ConcentrationState } from '../../features/concen
 import { TrackerState, SiteAlert } from '../../features/tracker/domain/types';
 import { showToastNotification } from '../common/toast';
 import { getTranslation, Language } from '../common/i18n';
+import { ICONS } from '../common/icons';
 
 let currentLang: Language = 'es';
 let lastConcentrationState: ConcentrationState | null = null;
@@ -52,6 +53,9 @@ function applyTranslations() {
   if (btnTestNotify) btnTestNotify.innerText = getTranslation(currentLang, 'opt_test_notif');
   if (statsSectionTitle) statsSectionTitle.innerText = getTranslation(currentLang, 'opt_stats_section');
   
+  const statsSearch = document.getElementById('stats-search') as HTMLInputElement;
+  if (statsSearch) statsSearch.placeholder = getTranslation(currentLang, 'opt_stats_search');
+  
   // Inputs placeholders
   const urlInput = document.getElementById('add-url') as HTMLInputElement;
   if (urlInput) urlInput.placeholder = 'example.com';
@@ -90,6 +94,10 @@ const addAlertBtn = document.getElementById('add-alert-btn') as HTMLButtonElemen
 
 // Elementos de Estadísticas
 const statsContainer = document.getElementById('stats-container') as HTMLDivElement;
+const statsSearchInput = document.getElementById('stats-search') as HTMLInputElement;
+
+let cachedStats: any = {};
+let cachedFavicons: { [url: string]: string } = {};
 
 async function loadOptions() {
   const state: ConcentrationState = await chrome.runtime.sendMessage({ type: 'GET_CONCENTRATION_STATE' });
@@ -115,8 +123,9 @@ async function loadOptions() {
   const alerts = trackerState?.alerts || [];
   renderAlerts(alerts);
 
-  const stats = trackerState?.dailyStats || {};
-  renderStats(stats);
+  cachedStats = trackerState?.dailyStats || {};
+  cachedFavicons = trackerState?.favicons || {};
+  renderStats();
   
   applyTranslations();
 }
@@ -132,14 +141,17 @@ function renderBlacklist(blacklist: SiteConfig[]) {
       
     item.innerHTML = `
       <span><strong>${site.url}</strong> (${currentLang === 'es' ? 'Modo' : 'Mode'}: ${modeText})</span>
-      <button class="remove-btn" data-url="${site.url}">${currentLang === 'es' ? 'Eliminar' : 'Remove'}</button>
+      <button class="remove-btn" data-url="${site.url}" title="${currentLang === 'es' ? 'Eliminar' : 'Remove'}">
+        ${ICONS.trash2}
+      </button>
     `;
     blacklistContainer.appendChild(item);
   });
 
   document.querySelectorAll('#blacklist-container .remove-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
-      const url = (e.target as HTMLButtonElement).dataset.url;
+      const btnEl = (e.target as HTMLElement).closest('.remove-btn') as HTMLButtonElement;
+      const url = btnEl?.dataset.url;
       if (url) {
         await chrome.runtime.sendMessage({ type: 'REMOVE_FROM_BLACKLIST', url });
         loadOptions();
@@ -155,14 +167,17 @@ function renderAlerts(alerts: SiteAlert[]) {
     item.className = 'blacklist-item';
     item.innerHTML = `
       <span><strong>${alert.url}</strong>: ${currentLang === 'es' ? 'Límite de' : 'Limit:'} ${alert.limitMinutes} ${currentLang === 'es' ? 'min/día' : 'min/day'}</span>
-      <button class="remove-alert-btn remove-btn" data-url="${alert.url}">${currentLang === 'es' ? 'Eliminar' : 'Remove'}</button>
+      <button class="remove-alert-btn remove-btn" data-url="${alert.url}" title="${currentLang === 'es' ? 'Eliminar' : 'Remove'}">
+        ${ICONS.trash2}
+      </button>
     `;
     alertsContainer.appendChild(item);
   });
 
   document.querySelectorAll('.remove-alert-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
-      const url = (e.target as HTMLButtonElement).dataset.url;
+      const btnEl = (e.target as HTMLElement).closest('.remove-btn') as HTMLButtonElement;
+      const url = btnEl?.dataset.url;
       if (url) {
         await chrome.runtime.sendMessage({ type: 'SET_ALERT', url, limitMinutes: 0 });
         loadOptions();
@@ -171,42 +186,58 @@ function renderAlerts(alerts: SiteAlert[]) {
   });
 }
 
-function renderStats(stats: any) {
+function renderStats() {
   statsContainer.innerHTML = '';
   const today = new Date().toISOString().split('T')[0];
-  const todayStats = stats[today] || {};
+  const todayStats = cachedStats[today] || {};
+  const searchTerm = statsSearchInput.value.toLowerCase();
 
-  const sortedStats = Object.entries(todayStats).sort((a, b) => (b[1] as number) - (a[1] as number));
+  // Filter by: search term AND duration >= 5 minutes
+  const filteredStats = Object.entries(todayStats)
+    .filter(([url, durationMs]) => {
+      const matchesSearch = url.toLowerCase().includes(searchTerm);
+      const isEnoughTime = (durationMs as number) >= 5 * 60 * 1000;
+      return matchesSearch && isEnoughTime;
+    })
+    .sort((a, b) => (b[1] as number) - (a[1] as number));
 
-  const totalMs = Object.values(todayStats).reduce((acc: number, val: any) => acc + val, 0) as number;
-  const totalMins = Math.floor(totalMs / 1000 / 60);
+  const totalFilteredMs = filteredStats.reduce((acc, [_, durationMs]) => acc + (durationMs as number), 0);
+  const totalMins = Math.floor(totalFilteredMs / 1000 / 60);
 
-  if (sortedStats.length === 0) {
+  if (filteredStats.length === 0) {
     statsContainer.innerHTML = `<p>${getTranslation(currentLang, 'opt_no_stats')}</p>`;
     return;
   }
 
   const summary = document.createElement('div');
-  summary.style.marginBottom = '20px';
-  summary.style.fontSize = '1.2rem';
-  summary.style.color = 'var(--primary-strong)';
+  summary.className = 'stats-summary';
   summary.innerHTML = `<strong>${getTranslation(currentLang, 'opt_total_today', { min: totalMins })}</strong>`;
   statsContainer.appendChild(summary);
 
-  sortedStats.forEach(([url, durationMs]: [string, any]) => {
+  filteredStats.forEach(([url, durationMs]: [string, any]) => {
     const totalSeconds = Math.floor(durationMs / 1000);
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
     
+    // Using Chrome favicon service (requires favicon permission in manifest)
+    const favicon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=https://${url}&size=32`;
+    
     const item = document.createElement('div');
     item.className = 'stat-item';
     item.innerHTML = `
-      <span><strong>${url}</strong></span>
-      <span>${mins}m ${secs}s</span>
+      <div class="stat-info">
+        <img src="${favicon}" class="stat-favicon" loading="lazy" onerror="this.src='/icons/onfocus-logo.png'">
+        <strong>${url}</strong>
+      </div>
+      <span class="stat-time">${mins}m ${secs}s</span>
     `;
     statsContainer.appendChild(item);
   });
 }
+
+statsSearchInput.addEventListener('input', () => {
+  renderStats();
+});
 
 langSelect.addEventListener('change', async () => {
   currentLang = langSelect.value as Language;

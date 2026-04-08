@@ -23,7 +23,6 @@ export class ConcentrationService {
     const state = await this.storage.get<ConcentrationState>(this.STORAGE_KEY);
     if (!state) return this.DEFAULT_STATE;
     
-    // Merge para asegurar que existen las nuevas propiedades (config, etc)
     return {
       ...this.DEFAULT_STATE,
       ...state,
@@ -32,6 +31,11 @@ export class ConcentrationService {
         ...(state.config || {})
       }
     };
+  }
+
+  async setActive(isActive: boolean): Promise<void> {
+    const state = await this.getState();
+    await this.storage.set(this.STORAGE_KEY, { ...state, isActive });
   }
 
   async markWizardCompleted(): Promise<void> {

@@ -14,6 +14,7 @@ export interface TrackerState {
   currentSession: SiteSession | null;
   dailyStats: DailyStats;
   alerts: SiteAlert[];
+  favicons: { [url: string]: string };
 }
 
 export interface SiteAlert {

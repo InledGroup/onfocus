@@ -18,5 +18,8 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.3",
     "vite-plugin-web-extension": "^4.5.0"
+  },
+  "dependencies": {
+    "lucide": "^1.7.0"
   }
 }

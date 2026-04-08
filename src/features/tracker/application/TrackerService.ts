@@ -12,7 +12,52 @@ export class TrackerService {
 
   async getState(): Promise<TrackerState> {
     const state = await this.storage.get<TrackerState>(this.STORAGE_KEY);
-    return state || { currentSession: null, dailyStats: {}, alerts: [] };
+    const defaultState: TrackerState = { currentSession: null, dailyStats: {}, alerts: [], favicons: {} };
+    if (!state) return defaultState;
+    
+    // Ensure all fields exist
+    const currentState: TrackerState = {
+      ...defaultState,
+      ...state
+    };
+    
+    // Strict Cleanup: keep ONLY today
+    const today = this.timeProvider.todayKey();
+    if (Object.keys(currentState.dailyStats).length !== 1 || !currentState.dailyStats[today]) {
+      const newState: TrackerState = {
+        ...currentState,
+        dailyStats: currentState.dailyStats[today] ? { [today]: currentState.dailyStats[today] } : {},
+        favicons: currentState.dailyStats[today] ? currentState.favicons : {} // Keep favicons only if we kept today's stats
+      };
+      
+      // If we cleared favicons, it's a new day, we start fresh
+      if (!currentState.dailyStats[today]) {
+        newState.favicons = {};
+      }
+
+      await this.storage.set(this.STORAGE_KEY, newState);
+      return newState;
+    }
+
+    return currentState;
+  }
+
+  async setFavicon(url: string, faviconUrl: string): Promise<void> {
+    const state = await this.getState();
+    const cleanUrl = this.getHostname(url);
+    
+    // Don't update if already set to something valid (not chrome-extension fallback)
+    if (state.favicons[cleanUrl] && !state.favicons[cleanUrl].startsWith('chrome-extension://')) return;
+    if (!faviconUrl) return;
+
+    const newState: TrackerState = {
+      ...state,
+      favicons: {
+        ...state.favicons,
+        [cleanUrl]: faviconUrl
+      }
+    };
+    await this.storage.set(this.STORAGE_KEY, newState);
   }
 
   async startSession(url: string): Promise<void> {

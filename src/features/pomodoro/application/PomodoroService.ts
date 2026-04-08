@@ -37,7 +37,13 @@ export class PomodoroService {
 
   async startWork(minutes?: number): Promise<void> {
     const state = await this.getState();
-    const workMinutes = minutes || state.config.workMinutes;
+    let workMinutes = minutes || state.config.workMinutes;
+    
+    if (isNaN(workMinutes) || workMinutes < 1) {
+      workMinutes = 25;
+    }
+
+    // Si venimos de IDLE, empezamos el ciclo 1. Si venimos de BREAK, el background ya incrementó el contador.
     const newState: PomodoroState = {
       ...state,
       status: 'work',
@@ -45,21 +51,35 @@ export class PomodoroService {
       durationMs: workMinutes * 60 * 1000,
       currentCycle: state.status === 'idle' ? 1 : state.currentCycle
     };
+    
     await this.storage.set(this.STORAGE_KEY, newState);
     this.alarms.create(this.ALARM_NAME, workMinutes);
   }
 
   async startBreak(minutes?: number): Promise<void> {
     const state = await this.getState();
-    const breakMinutes = minutes || state.config.breakMinutes;
+    let breakMinutes = minutes || state.config.breakMinutes;
+
+    if (isNaN(breakMinutes) || breakMinutes < 1) {
+      breakMinutes = 5;
+    }
+
     const newState: PomodoroState = {
       ...state,
       status: 'break',
       startTime: this.timeProvider.now(),
       durationMs: breakMinutes * 60 * 1000
     };
+    
     await this.storage.set(this.STORAGE_KEY, newState);
     this.alarms.create(this.ALARM_NAME, breakMinutes);
+  }
+
+  async incrementCycle(): Promise<number> {
+    const state = await this.getState();
+    const nextCycle = (state.currentCycle || 0) + 1;
+    await this.storage.set(this.STORAGE_KEY, { ...state, currentCycle: nextCycle });
+    return nextCycle;
   }
 
   async stop(): Promise<void> {

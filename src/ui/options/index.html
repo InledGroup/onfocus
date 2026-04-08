@@ -25,23 +25,28 @@
 
     <section class="config-section">
       <h2>Tiempos de Enfoque</h2>
-      <div class="form-group">
-        <label for="study-mins">Tiempo de Estudio (minutos):</label>
-        <input type="number" id="study-mins" value="25" min="1">
-      </div>
-      <div class="form-group">
-        <label for="pomodoro-mins">Tiempo de Pomodoro (minutos):</label>
-        <input type="number" id="pomodoro-mins" value="5" min="1">
-      </div>
-      <div class="form-group">
-        <label for="total-cycles">Número de Repeticiones (Ciclos):</label>
-        <input type="number" id="total-cycles" value="1" min="1">
+      <div class="grid-inputs">
+        <div class="form-group">
+          <label for="study-mins">Tiempo de Estudio (minutos):</label>
+          <input type="number" id="study-mins" value="25" min="1">
+        </div>
+        <div class="form-group">
+          <label for="pomodoro-mins">Tiempo de Pomodoro (minutos):</label>
+          <input type="number" id="pomodoro-mins" value="5" min="1">
+        </div>
+        <div class="form-group">
+          <label for="total-cycles">Número de Repeticiones (Ciclos):</label>
+          <input type="number" id="total-cycles" value="1" min="1">
+        </div>
       </div>
       <div class="form-group checkbox-group">
         <input type="checkbox" id="enable-pomodoro" checked>
         <label for="enable-pomodoro">Activar Pomodoro automáticamente al iniciar enfoque</label>
       </div>
-      <button id="save-config" class="btn btn-primary">Guardar Configuración</button>
+      <button id="save-config" class="btn btn-primary btn-icon-text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        <span>Guardar Configuración</span>
+      </button>
     </section>
 
     <section class="config-section">
@@ -52,7 +57,9 @@
           <option value="block">Bloquear</option>
           <option value="countdown">Temporizar</option>
         </select>
-        <button id="add-btn" class="btn btn-primary">Añadir</button>
+        <button id="add-btn" class="btn btn-primary btn-only-icon" title="Añadir">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
       </div>
       <div id="blacklist-container" class="list-container">
         <!-- Lista de sitios cargada dinámicamente -->
@@ -64,7 +71,9 @@
       <div class="input-row">
         <input type="text" id="alert-url" placeholder="ejemplo.com">
         <input type="number" id="alert-mins" placeholder="min" min="1">
-        <button id="add-alert-btn" class="btn btn-primary">Añadir Alerta</button>
+        <button id="add-alert-btn" class="btn btn-primary btn-only-icon" title="Añadir Alerta">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.3 14.8C20.1 16.4 21 17 21 17H3s.9-.6 1.7-2.2c.7-1.4.7-4 .7-4.8 0-2.4 1.1-4.5 3-5.7C8.4 4.1 9 4 9.5 4c0-1.1.9-2 2-2s2 .9 2 2c.5 0 1.1.1 1.6.3 1.9 1.2 3 3.3 3 5.7 0 .8 0 3.4.7 4.8Z"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path><line x1="15" y1="8" x2="19" y2="8"></line><line x1="17" y1="6" x2="17" y2="10"></line></svg>
+        </button>
       </div>
       <div id="alerts-container" class="list-container">
         <!-- Alertas cargadas dinámicamente -->
@@ -74,11 +83,20 @@
     <section class="config-section">
       <h2>Depuración y Pruebas</h2>
       <p>Utiliza este botón para verificar que las notificaciones visuales y sonoras funcionan correctamente en tu navegador.</p>
-      <button id="test-notify" class="btn btn-secondary">Probar Notificación de Sistema</button>
+      <button id="test-notify" class="btn btn-secondary btn-icon-text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg>
+        <span>Probar Notificación de Sistema</span>
+      </button>
     </section>
 
     <section class="config-section">
       <h2>Estadísticas de Hoy</h2>
+      <div class="search-container">
+        <span class="search-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="stats-search" placeholder="Buscar sitio...">
+      </div>
       <div id="stats-container">
         <!-- Estadísticas cargadas dinámicamente -->
       </div>

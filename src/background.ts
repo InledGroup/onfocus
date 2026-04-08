@@ -22,7 +22,6 @@ async function notifyUser(titleKey: string, messageKey: string, params: Record<s
   const message = getTranslation(lang, messageKey as any, params);
   const iconPath = 'icons/onfocus-logo.png';
   
-  // 1. Notificación de Sistema (Chrome)
   try {
     chrome.notifications.create(`onfocus_${Date.now()}`, {
       type: 'basic',
@@ -46,7 +45,6 @@ async function notifyUser(titleKey: string, messageKey: string, params: Record<s
     console.error('Failed to create system notification:', e);
   }
 
-  // 2. Notificación Toast en TODAS las pestañas visibles
   try {
     const tabs = await chrome.tabs.query({ status: 'complete' });
     tabs.forEach(tab => {
@@ -62,7 +60,6 @@ async function notifyUser(titleKey: string, messageKey: string, params: Record<s
     console.error('Failed to send Toast messages:', e);
   }
   
-  // 3. Notificación interna para Opciones/Popup abiertos
   chrome.runtime.sendMessage({ 
     type: 'INTERNAL_NOTIFICATION', 
     title, 
@@ -83,30 +80,28 @@ async function removeOverlaysFromAllTabs() {
 // Alarma para Pomodoro y Checkpoints de tiempo
 alarms.onAlarm(async (name) => {
   if (name === 'pomodoro_timer') {
-    const state = await concentrationService.getState();
     const pomState = await pomodoroService.getState();
     
     if (pomState.status === 'work') {
+      // Al terminar de ESTUDIAR, siempre vamos a DESCANSO (independientemente del ciclo)
+      await pomodoroService.startBreak();
+      await notifyUser('notif_break_title', 'notif_break_msg');
+      chrome.runtime.sendMessage({ type: 'POMODORO_SWITCHED', status: 'break' }).catch(() => {});
+      await removeOverlaysFromAllTabs();
+    } else if (pomState.status === 'break') {
+      // Al terminar de DESCANSAR, comprobamos si hemos terminado todos los ciclos
       if (pomState.currentCycle >= pomState.config.totalCycles) {
         await pomodoroService.stop();
-        await concentrationService.toggleActive();
+        await concentrationService.setActive(false); 
         await notifyUser('notif_finish_title', 'notif_finish_msg', { total: pomState.config.totalCycles });
         chrome.runtime.sendMessage({ type: 'POMODORO_SWITCHED', status: 'idle' }).catch(() => {});
-        await removeOverlaysFromAllTabs();
       } else {
-        await pomodoroService.startBreak(state.config.pomodoroMinutes);
-        await notifyUser('notif_break_title', 'notif_break_msg');
-        chrome.runtime.sendMessage({ type: 'POMODORO_SWITCHED', status: 'break' }).catch(() => {});
-        await removeOverlaysFromAllTabs();
+        // Todavía quedan ciclos: incrementar y volver a trabajar
+        const nextCycle = await pomodoroService.incrementCycle();
+        await pomodoroService.startWork();
+        await notifyUser('notif_study_title', 'notif_study_msg', { current: nextCycle, total: pomState.config.totalCycles });
+        chrome.runtime.sendMessage({ type: 'POMODORO_SWITCHED', status: 'work' }).catch(() => {});
       }
-    } else if (pomState.status === 'break') {
-      const nextCycle = (pomState.currentCycle || 0) + 1;
-      await pomodoroService.startWork(state.config.studyMinutes);
-      const updatedState = await pomodoroService.getState();
-      await storage.set('pomodoro_state', { ...updatedState, currentCycle: nextCycle });
-
-      await notifyUser('notif_study_title', 'notif_study_msg', { current: nextCycle, total: pomState.config.totalCycles });
-      chrome.runtime.sendMessage({ type: 'POMODORO_SWITCHED', status: 'work' }).catch(() => {});
     }
   } else if (name === 'tracker_checkpoint') {
     await trackerService.updateCurrentSessionDuration();
@@ -130,6 +125,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   if (tab?.url) {
     await trackerService.startSession(tab.url);
     await checkAndBlock(activeInfo.tabId, tab.url);
+    if (tab.favIconUrl) {
+      await trackerService.setFavicon(tab.url, tab.favIconUrl);
+    }
   }
 });
 
@@ -137,6 +135,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if ((changeInfo.url || changeInfo.status === 'complete') && tab.active) {
     await trackerService.startSession(tab.url!);
     await checkAndBlock(tabId, tab.url!);
+    if (tab.favIconUrl) {
+      await trackerService.setFavicon(tab.url!, tab.favIconUrl);
+    }
   }
 });
 
@@ -222,7 +223,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const isActive = await concentrationService.toggleActive();
       const state = await concentrationService.getState();
       if (isActive && state.config.isPomodoroEnabled) {
-        await pomodoroService.startWork(state.config.studyMinutes);
+        await pomodoroService.startWork();
       } else {
         await pomodoroService.stop();
         await removeOverlaysFromAllTabs();

@@ -83,18 +83,23 @@ chrome.runtime.onMessage.addListener((message) => {
 
 // Timer loop local para suavidad
 setInterval(async () => {
-  const concentrationState = await chrome.runtime.sendMessage({ type: 'GET_CONCENTRATION_STATE' });
-  if (concentrationState.isActive) {
-    const pomodoroState: PomodoroState = await chrome.runtime.sendMessage({ type: 'GET_POMODORO_STATE' });
-    if (pomodoroState.status !== 'idle' && pomodoroState.startTime) {
-      updateTimerUI(pomodoroState);
+  try {
+    const concentrationState = await chrome.runtime.sendMessage({ type: 'GET_CONCENTRATION_STATE' });
+    if (concentrationState && concentrationState.isActive) {
+      const pomodoroState: PomodoroState = await chrome.runtime.sendMessage({ type: 'GET_POMODORO_STATE' });
+      if (pomodoroState && pomodoroState.status !== 'idle' && pomodoroState.startTime) {
+        updateTimerUI(pomodoroState);
+      }
     }
+  } catch (e) {
+    // El popup puede haberse cerrado mientras se enviaba el mensaje
   }
 }, 1000);
 
 toggleBtn.addEventListener('click', async () => {
-  await chrome.runtime.sendMessage({ type: 'TOGGLE_FOCUS' });
-  refreshState();
+  const result = await chrome.runtime.sendMessage({ type: 'TOGGLE_FOCUS' });
+  // Refresco inmediato tras pulsar el botón para que el temporizador no tarde 1 segundo
+  setTimeout(refreshState, 50);
 });
 
 settingsBtn.addEventListener('click', () => {

@@ -9,7 +9,8 @@
     "tabs",
     "idle",
     "notifications",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "favicon"
   ],
   "host_permissions": ["<all_urls>"],
   "action": {
